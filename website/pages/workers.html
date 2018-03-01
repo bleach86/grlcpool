@@ -32,6 +32,49 @@
 
 </style>
 
+<script type="text/javascript">
+	$(function(){
+	
+	var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+	};
+	
+
+	
+	function filterWorkers(address) {
+	
+	if ( address != "" && typeof address !== 'undefined' ) { 
+	       
+		   $("tbody tr :first-child:contains("+address+")").show();
+		    $("tbody tr :first-child:contains("+address+")").siblings().show();
+			$("tbody tr :first-child:not(:contains("+address+"))").hide();
+			$("tbody tr :first-child:not(:contains("+address+"))").siblings().hide();
+			 } else { $("tbody tr td").show();  }
+
+	}
+		var address = getUrlParameter("filter");
+		filterWorkers(address);
+		$( "#filter" ).val(address);
+		
+	
+		$( "#filter" ).keyup(function() {
+			filterWorkers(this.value);
+		});
+	
+	});
+	</script>
+
 
 <div id="topCharts">
 
@@ -42,6 +85,7 @@
         <div class="chartHolder">
             <table class="pure-table">
                 <thead>
+                    <tr><td colspan="5" style="text-align: right;"><label for="filter">Filter:&nbsp;</label><input type="text" placeholder="address..." id="filter" name="filter" /></td></tr>
                 <tr>
                     <th>Address</th>
                     <th>Shares</th>
@@ -54,9 +98,9 @@
                    {{var workerstat = it.stats.pools[pool].workers[worker];}}
                     <tr class="pure-table-odd">
                         <td>{{=worker}}</td>
-                        <td>{{=Math.floor(workerstat.shares)}}</td>
+                        <td>{{=Math.floor(workerstat.currRoundShares)}}</td>
                         <td>{{=Math.floor(workerstat.invalidshares)}}</td>
-                        <td>{{? workerstat.shares > 0}} {{=Math.floor(10000 * workerstat.shares / (workerstat.shares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
+                        <td>{{? workerstat.currRoundShares > 0}} {{=Math.floor(10000 * workerstat.currRoundShares / (workerstat.currRoundShares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
                         <td>{{=workerstat.hashrateString}}</td>
                     </tr>
                 {{ } }}
