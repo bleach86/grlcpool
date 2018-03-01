@@ -1,4 +1,4 @@
-﻿<style>
+<style>
     #boxWelcome{
         background-color: #212121;
         color: white;
@@ -79,18 +79,14 @@
         <img id="logoImg" src="/static/NVIDIA-TITAN.png">
     </div>
     <div class="pure-u-2-3">
-        <div id="welcomeText">Join The GRLC GANG!</div>
+        <div id="welcomeText">Pool.GRLC.Life<br>Join The GRLC GANG</div>
         <ul id="welcomeItems">
-            <li><b>Gigabit Connection</b> ✔</li>
-      	    <li><b>Low</b> 0.8% Fee ✔</li>
-            <li>Block Solver <b>Bonus</b> of .30% ✔</li>
-            <li>Minimum Payout of 0.001 for <b>Server Stability</b> ✔</li>
-            <li><b>99.9% Up-time</b> ✔</li>
-            <li>Random <b>Bonus GRLC</b> Giveaways to all active miners online ✔</li>
-	<br>
-Join us on Discord!  - <a href="https://discord.gg/mQkNMjq">https://discord.gg/mQkNMjq</a>
-<br><br>Donation address: GKJpNNixKksnAwrgtKv58Ctbg9s9ut7Q1f
-        </ul><br>
+            <li>No Minimum Payout.</li>
+            <li>Sweet Block Solver Bonus.</li>
+            <li>99.9% Up-time.</li>
+            <li>Uber-Buttery Goodness.</li>
+	<br><br><li>CONNECTION DETAILS:<br><br>Pool: stratum+tcp://pool.grlc.life:3333<br>Username: WALLETADDRESS (-u WALLETADDRESS)<br>Password: x (NOT REQUIRED, or -p x)<br><br></li>
+        </ul>
     </div>
 </div>
 
@@ -111,16 +107,17 @@ Join us on Discord!  - <a href="https://discord.gg/mQkNMjq">https://discord.gg/m
         </div>
     </div>
 
-<div class="pure-u-1-2">
+    <div class="pure-u-1-2">
         <div class="boxStats" id="boxStatsRight">
-            <div class="boxLowerHeader">CONNECTION DETAILS:</div>
+            <div class="boxLowerHeader">Pools / Coins</div>
             <div class="boxStatsList">
+                {{ for(var pool in it.stats.pools) { }}
                 <div>
-                    <div><li>Pool: stratum+tcp://pool.grlc.life:3333</li></div>
-                    <div><li>Username: WALLETADDRESS (-u WALLETADDRESS)</li></div>
-                    <div><li>No Password Required</li></div>
+                    <div><i class="fa fa-dot-circle-o"></i>{{=pool}}</div>
+                    <div><i class="fa fa-users"></i><span id="statsMiners{{=pool}}">{{=it.stats.pools[pool].workerCount}}</span> Miners</div>
+                    <div><i class="fa fa-tachometer"></i><span id="statsHashrate{{=pool}}">{{=it.stats.pools[pool].hashrateString}}</span></div>
                 </div>
-
+                {{ } }}
             </div>
         </div>
     </div>
