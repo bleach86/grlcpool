@@ -58,7 +58,7 @@
                     <th>Invalid shares</th>
                     <th>Efficiency</th>
                     <th>Hashrate</th>
-                    <th>Projected Payout</th>
+                   <!-- <th>Projected Payout</th> -->
                 </tr>
                 </thead>
           
@@ -70,7 +70,7 @@
                         <td>{{=Math.floor(workerstat.invalidshares)}}</td>
                         <td>{{? workerstat.shares > 0}} {{=Math.floor(10000 * workerstat.shares / (workerstat.shares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
                         <td data-order="{{=Math.abs(workerstat.shares)}}">{{=workerstat.hashrateString}}</td>
-                        <td>{{? workerstat.shares > 0}} {{=(((workerstat.shares / it.stats.pools[pool].shareCount) * 49.75)).toFixed(8)}} GRLC {{??}} 0 {{?}}</td>
+                        
                     </tr>
                 {{ } }}
             </table>
