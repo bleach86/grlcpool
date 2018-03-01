@@ -62,10 +62,10 @@
                 </tr>
                 </thead>
           
-                {{ for(var worker in it.stats.pools[pool].miners) { }}
-                   {{var workerstat = it.stats.pools[pool].miners[worker];}}
+                {{ for(var worker in it.stats.pools[pool].workers) { }}
+-                   {{var workerstat = it.stats.pools[pool].workers[worker];}}
                     <tr class="pure-table-odd">
-                        <td>{{=worker}}</a></td>
+                        <td>{{=worker}}</td>
                         <td>{{=Math.round(workerstat.currRoundShares * 100) / 100}}</td>
                         <td>{{=Math.floor(workerstat.invalidshares)}}</td>
                         <td>{{? workerstat.shares > 0}} {{=Math.floor(10000 * workerstat.shares / (workerstat.shares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
