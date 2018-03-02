@@ -39,6 +39,34 @@
       "pageLength": 50,
       "lengthMenu": [[25, 50, -1], [25, 50, "All"]],
     });
+      
+
+	var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+	};
+	
+	var giveaway = getUrlParameter("giveaway");
+	if ( giveaway != "" && typeof giveaway !== 'undefined' ) { 
+	
+	$("tbody tr td:not(:first-child)").hide(); //hide all cells that aren't addresses
+	
+	$("tbody tr :first-child:Contains(GTNsgxcXr1V2DKZ2h88pELX66nkgn1cb83)").hide();//filter out specific addresses
+	$("tbody tr :first-child:Contains(GRHW7i1pTewHABwSQqaN6cqjd2uaCjXUki)").hide();
+	
+	
+	}
+   
   });
 </script>
 
