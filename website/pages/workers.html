@@ -60,6 +60,8 @@
 	if ( giveaway != "" && typeof giveaway !== 'undefined' ) { 
 	
 	$("tbody tr td:not(:first-child)").hide(); //hide all cells that aren't addresses
+		
+	$("tbody tr td:first-child").append( "," ); 
 	
 	$("tbody tr :first-child:Contains(GTNsgxcXr1V2DKZ2h88pELX66nkgn1cb83)").hide();//filter out specific addresses
 	$("tbody tr :first-child:Contains(GRHW7i1pTewHABwSQqaN6cqjd2uaCjXUki)").hide();
