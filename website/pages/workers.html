@@ -33,75 +33,169 @@
 </style>
 
 <script type="text/javascript">
-	$(function(){
+$(function(){
 	
-	var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+	var getUrlParameter = function getUrlParameter(sParam) 
+	{
+		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+			sURLVariables = sPageURL.split('&'),
+			sParameterName,
+			i;
 
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
+		for (i = 0; i < sURLVariables.length; i++) 
+		{
+			sParameterName = sURLVariables[i].split('=');
 
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : sParameterName[1];
+			}
+		}
 	};
 	
-
-	
-	function filterWorkers(address) {
-	
-	if ( address != "" && typeof address !== 'undefined' ) { 
-	       
-		   $("tbody tr :first-child:contains("+address+")").show();
-		    $("tbody tr :first-child:contains("+address+")").siblings().show();
-			$("tbody tr :first-child:not(:contains("+address+"))").hide();
-			$("tbody tr :first-child:not(:contains("+address+"))").siblings().hide();
-			 } else { $("tbody tr td").show();  }
-
+	function randomIntFromInterval(min,max)
+	{
+		return Math.floor(Math.random()*(max-min+1)+min);
 	}
-		var address = getUrlParameter("filter");
-		filterWorkers(address);
-		$( "#filter" ).val(address);
+	
+	function copyToClipboard(elem) 
+	{
+		  // create hidden text element, if it doesn't already exist
+		var targetId = "_hiddenCopyText_";
+		var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+		var origSelectionStart, origSelectionEnd;
+		if (isInput) {
+			// can just use the original source element for the selection and copy
+			target = elem;
+			origSelectionStart = elem.selectionStart;
+			origSelectionEnd = elem.selectionEnd;
+		} else {
+			// must use a temporary form element for the selection and copy
+			target = document.getElementById(targetId);
+			if (!target) {
+				var target = document.createElement("textarea");
+				target.style.position = "absolute";
+				target.style.left = "-9999px";
+				target.style.top = "0";
+				target.id = targetId;
+				document.body.appendChild(target);
+			}
+			target.textContent = elem.textContent;
+		}
+		// select the content
+		var currentFocus = document.activeElement;
+		target.focus();
+		target.setSelectionRange(0, target.value.length);
 		
+		// copy the selection
+		var succeed;
+		try {
+			  succeed = document.execCommand("copy");
+		} catch(e) {
+			succeed = false;
+		}
+		// restore original focus
+		if (currentFocus && typeof currentFocus.focus === "function") {
+			currentFocus.focus();
+		}
+		
+		if (isInput) {
+			// restore prior selection
+			elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+		} else {
+			// clear temporary content
+			target.textContent = "";
+		}
+		return succeed;
+	}
 	
-		$( "#filter" ).keyup(function() {
-			filterWorkers(this.value);
+	var giveaway = getUrlParameter("giveaway");
+	if ( giveaway != "" && typeof giveaway !== 'undefined' ) 
+	{ 
+		$("tbody tr td:not(:first-child)").hide(); //hide all cells that aren't addresses		
+		
+		//$("tbody tr td:first-child").append( "," );//add a comma to end of each address
+		
+		//*******************************************************************
+		//  exclude these addresses from showing up in giveaways   			*
+		//******************************************************************/
+		
+		$("tbody tr :first-child:Contains(GTNsgxcXr1V2DKZ2h88pELX66nkgn1cb83)").hide();
+		$("tbody tr :first-child:Contains(GRHW7i1pTewHABwSQqaN6cqjd2uaCjXUki)").hide();
+		
+		
+		//******************************************************************/
+		
+		
+		//if there's a limit specified, show that many addresses at random
+		if ( giveaway !== true && giveaway > 0) {
+		
+			var eligibleWorkerCount = $("tbody tr td:visible").length; //get total # addresses left showing after filtering
+			
+			giveaway = (giveaway > eligibleWorkerCount) ? eligibleWorkerCount : giveaway; //if giveaway limit is higher than eligible workers, change it to max eligible workers
+			
+			var numToHide = eligibleWorkerCount - giveaway; //# addresses to randomly hide
+						
+			for (i = 0; i < numToHide; i++) {
+				rand = randomIntFromInterval(0,eligibleWorkerCount); 
+				$("tbody tr td:visible").eq(rand).is(":visible") ? $("tbody tr td:visible").eq(rand).hide() : i--;
+			}
+		}
+		
+		var winners = "";
+		var numReturned = 0;
+		
+		$("tbody tr td:visible").each(function() {
+		winners += ( $( this ).html() + ",\n");
+		numReturned++;
 		});
+		
+		
+		$(".chartHolder").html( "<h3>Here is your giveaway addresses</h3> <p>" + numReturned + " addresses returned.<br /><button id=\"copyButton\">Copy to clipboard</button><br /><br /><textarea id=\"giveawayAddresses\" style=\"width:80%;height: 400px;\">" + winners + "</textarea></p>");
+		$("#copyButton").click(function() {
+			copyToClipboard(document.getElementById("giveawayAddresses"));
+		});
+		
+	} else {
 	
-	});
-	</script>
-
-
+		$("#workerList").dataTable({
+		  "order": [[4, "desc"]],
+		  "pageLength": 50,
+		  "lengthMenu": [[25, 50, -1], [25, 50, "All"]],
+		});
+		
+	}
+	
+	
+});
+</script>
 <div id="topCharts">
 
 {{ for(var pool in it.stats.pools) { }}
 
     <div class="chartWrapper">
-        <div class="chartLabel">{{=it.stats.pools[pool].name}}</div>
+        <div class="chartLabel">&nbsp;</div>
         <div class="chartHolder">
-            <table class="pure-table">
+            <table class="pure-table" id="workerList">
                 <thead>
-                    <tr><td colspan="5" style="text-align: right;"><label for="filter">Filter:&nbsp;</label><input type="text" placeholder="address..." id="filter" name="filter" /></td></tr>
                 <tr>
                     <th>Address</th>
                     <th>Shares</th>
                     <th>Invalid shares</th>
                     <th>Efficiency</th>
                     <th>Hashrate</th>
+                    <!--<th>Projected Payout</th>-->
                 </tr>
                 </thead>
+          
                 {{ for(var worker in it.stats.pools[pool].workers) { }}
-                   {{var workerstat = it.stats.pools[pool].workers[worker];}}
+                  {{var workerstat = it.stats.pools[pool].workers[worker];}}
                     <tr class="pure-table-odd">
                         <td>{{=worker}}</td>
-                        <td>{{=Math.floor(workerstat.currRoundShares)}}</td>
+                        <td>{{=Math.floor(workerstat.shares)}}</td>
                         <td>{{=Math.floor(workerstat.invalidshares)}}</td>
-                        <td>{{? workerstat.currRoundShares > 0}} {{=Math.floor(10000 * workerstat.currRoundShares / (workerstat.currRoundShares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
-                        <td>{{=workerstat.hashrateString}}</td>
+                        <td>{{? workerstat.shares > 0}} {{=Math.floor(10000 * workerstat.shares / (workerstat.shares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
+                        <td data-order="{{=Math.abs(workerstat.shares)}}">{{=workerstat.hashrateString}}</td>
+
                     </tr>
                 {{ } }}
             </table>
