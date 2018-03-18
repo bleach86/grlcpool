@@ -120,7 +120,7 @@ $(function(){
 		//******************************************************************/
 		
 		$("tbody tr :first-child:Contains(GTNsgxcXr1V2DKZ2h88pELX66nkgn1cb83)").hide();
-		$("tbody tr :first-child:Contains(GRHW7i1pTewHABwSQqaN6cqjd2uaCjXUki)").hide();
+		$("tbody tr :first-child:Contains(GSECRET9f4HQwo9p3RS3mFBmbFRN2GwV5p)").hide();
 		
 		
 		//******************************************************************/
@@ -156,6 +156,22 @@ $(function(){
 		});
 		
 	} else {
+		var totalShares = 0;
+		
+	
+	  
+		$(".pure-table-odd :nth-child(5)").each(function(index) { 
+			totalShares += parseFloat(($(this).attr('data-order')));
+			});
+			
+
+		$(".pure-table-odd :nth-child(6)").each(function(index) {
+		
+		$(this).html( (parseFloat( ($(this).attr('data-order') / totalShares) * 49.75 ) ).toFixed(4) + " GRLC" );
+		
+		});		
+		
+		
 	
 		$("#workerList").dataTable({
 		  "order": [[4, "desc"]],
@@ -183,7 +199,7 @@ $(function(){
                     <th>Invalid shares</th>
                     <th>Efficiency</th>
                     <th>Hashrate</th>
-                    <!--<th>Projected Payout</th>-->
+                    <th>Projected Payout</th>
                 </tr>
                 </thead>
           
@@ -195,6 +211,7 @@ $(function(){
                         <td>{{=Math.floor(workerstat.invalidshares)}}</td>
                         <td>{{? workerstat.shares > 0}} {{=Math.floor(10000 * workerstat.shares / (workerstat.shares + workerstat.invalidshares)) / 100}}% {{??}} 0% {{?}}</td>
                         <td data-order="{{=Math.abs(workerstat.shares)}}">{{=workerstat.hashrateString}}</td>
+						<td data-order="{{=Math.abs(workerstat.shares)}}">&nbsp;</td>
 
                     </tr>
                 {{ } }}
